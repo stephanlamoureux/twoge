@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Setup script for EC2 instance
+
 sudo yum update -y
 sudo yum install git -y
 git clone https://github.com/chandradeoarya/twoge

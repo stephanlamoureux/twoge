@@ -1,9 +1,8 @@
 #!/usr/bin/env python
+# Produces load on all available CPU cores
 
 from multiprocessing import Pool
 from multiprocessing import cpu_count
-
-# Produces load on all available CPU cores
 
 
 def f(x):
