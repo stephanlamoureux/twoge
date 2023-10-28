@@ -1,0 +1,15 @@
+Description=Gunicorn instance to serve twoge
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ec2-user/twoge
+Environment="PATH=/home/ec2-user/twoge/venv/bin"
+ExecStart=/home/ec2-user/twoge/venv/bin/gunicorn app:app -c /home/ec2-user/twoge/gunicorn_config.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target'

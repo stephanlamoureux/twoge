@@ -1,6 +1,6 @@
 # Twoge
 
-Elon Musk, the renowned entrepreneur, is developing a new version of Twitter called "Twoge" where users are only allowed to tweet about Doge. While some may question the need for such an app. He has reached out to Codeplatoon to launch, maintain and deploy the app.
+Elon Musk, the renowned entrepreneur, is developing a new version of Twitter called "Twoge" where users are only allowed to tweet about Doge. While some may question the need for such an app. He has reached out to Code Platoon to launch, maintain and deploy the app.
 
 ## AWS Services and their purpose for Twoge
 
@@ -12,3 +12,59 @@ Elon Musk, the renowned entrepreneur, is developing a new version of Twitter cal
 6. AWS ASG (Auto Scaling Group) to automatically scale EC2 instances up or down based on the demand.
 7. AWS SNS (Simple Notification Service) to receive notifications about the application's performance and health.
 8. AWS RDS (Relational Database Service) for the database.
+
+```sh
+sudo apt update -y
+
+sudo apt install git python3 -y
+
+sudo apt install python3-pip -y
+
+git clone https://github.com/chandradeoarya/twoge.git
+
+cd twoge
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+```
+
+Create a .env file:
+
+```sh
+SQLALCHEMY_DATABASE_URI = "PostgreSQL database URL"
+```
+
+Create a twoge.service file:
+
+```sh
+Description=Gunicorn instance to serve twoge
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ec2-user/twoge
+Environment="PATH=/home/ec2-user/twoge/venv/bin"
+ExecStart=/home/ec2-user/twoge/venv/bin/gunicorn app:app -c /home/ec2-user/twoge/gunicorn_config.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target'
+```
+
+```sh
+sudo cp twoge.service /etc/systemd/system/twoge.service
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable twoge
+
+sudo systemctl start twoge
+
+sudo systemctl status twoge
+```
