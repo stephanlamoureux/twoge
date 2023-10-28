@@ -1,6 +1,20 @@
 # Twoge
 
-Elon Musk, the renowned entrepreneur, is developing a new version of Twitter called "Twoge" where users are only allowed to tweet about Doge. While some may question the need for such an app. He has reached out to Code Platoon to launch, maintain and deploy the app.
+<div align="center">
+ <img
+  width="100"
+  alt="Project Twoge"
+  src="./img/twoge.png" />
+ <p>Twoge is a social media platform dedicated solely to tweets about Dodge.</p>
+</div>
+
+<div align="center">
+ <img
+  width="500"
+  alt="Project Twoge"
+  src="./img/twoge-cover.png" />
+ <p>This application is built using Flask, SQLAlchemy, and PostgreSQL.</p>
+</div>
 
 ## AWS Services and their purpose for Twoge
 
