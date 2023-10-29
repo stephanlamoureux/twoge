@@ -1,12 +1,11 @@
 # Deployment Guide
 
-- [Deployment Guide](#deployment-guide)
-	- [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
-	- [Security Group](#security-group)
-	- [EC2 (Elastic Cloud Compute)](#ec2-elastic-cloud-compute)
-	- [RDS (Relational Database Service)](#rds-relational-database-service)
-	- [Daemon](#daemon)
-	- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
+- [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
+- [Security Group](#security-group)
+- [EC2 (Elastic Cloud Compute)](#ec2-elastic-cloud-compute)
+- [RDS (Relational Database Service)](#rds-relational-database-service)
+- [Daemon](#daemon)
+- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
 
 ## VPC (Virtual Private Cloud)
 
