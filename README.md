@@ -1,20 +1,31 @@
 <div align="center">
- <img
-  width="100"
-  alt="Project Twoge"
-  src="./img/twoge.png" />
- <h1>Twoge</h1>
- <p>A social media platform dedicated solely to tweets about Dodge.</p>
+ <h2>Deployment Guide</h2>
 </div>
 
-## Initial Setup
+## VPC (Virtual Private Cloud)
+
+Create a VPC with two public subnets.
+
+## Security Group
+
+Create a security group that allows inbound access for HTTP, SSH, and PostgreSQL.
+
+SSH  | TCP | 22   | 0.0.0.0/0
+
+HTTP | TCP | 80   | 0.0.0.0/0
+
+PSQL | TCP | 5432 | RDS IP?
+
+## EC2
+
+1. Create an Ubuntu instance with SSH and HTTP access.
+
+2. SSH into the instance and install dependencies:
 
 ```sh
-sudo apt update -y
+sudo yum update -y
 
-sudo apt install git python3 -y
-
-sudo apt install python3-pip -y
+sudo yum install git -y
 
 git clone https://github.com/chandradeoarya/twoge.git
 
@@ -27,27 +38,31 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create a .env file:
+3. Create AMI.
+
+## RDS
+
+1. Create a .env file in root of twoge directory:
 
 ```sh
 nano .env
 ```
 
-Add the PostgreSQL database URL:
+2. Add the PostgreSQL database URL:
 
 ```sh
 SQLALCHEMY_DATABASE_URI = "PostgreSQL database URL"
 ```
 
-## Daemon Creation
+## Daemon
 
-Create the service file:
+1. Create the service file:
 
 ```sh
 nano twoge.service
 ```
 
-Add the following:
+2. Add the following contents:
 
 ```sh
 Description=Gunicorn instance to serve twoge
@@ -67,7 +82,7 @@ RestartSec=10
 WantedBy=multi-user.target'
 ```
 
-Move the service file to the correct directory and activate it:
+3. Move the service file to the correct directory and activate it:
 
 ```sh
 sudo cp twoge.service /etc/systemd/system/twoge.service
@@ -91,6 +106,17 @@ sudo systemctl status twoge
 6. AWS ASG (Auto Scaling Group) to automatically scale EC2 instances up or down based on the demand.
 7. AWS SNS (Simple Notification Service) to receive notifications about the app's performance & health.
 8. AWS RDS (Relational Database Service) for the database.
+
+<br>
+<br>
+<div align="center">
+ <img
+  width="100"
+  alt="Project Twoge"
+  src="./img/twoge.png" />
+ <h3>Twoge</h3>
+ <p>A social media platform dedicated solely to tweets about Dodge.</p>
+</div>
 
 <div align="center">
  <img
