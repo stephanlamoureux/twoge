@@ -1,6 +1,4 @@
-<div align="center">
- <h2>Deployment Guide</h2>
-</div>
+# Deployment Guide
 
 ## VPC (Virtual Private Cloud)
 
@@ -16,7 +14,7 @@ HTTP | TCP | 80   | 0.0.0.0/0
 
 PSQL | TCP | 5432 | RDS IP?
 
-## EC2
+## EC2 (Elastic Cloud Compute)
 
 1. Create an Ubuntu instance with SSH and HTTP access.
 
@@ -40,7 +38,7 @@ pip install -r requirements.txt
 
 3. Create AMI.
 
-## RDS
+## RDS (Relational Database Service)
 
 1. Create a .env file in root of twoge directory:
 
@@ -109,6 +107,7 @@ sudo systemctl status twoge
 
 <br>
 <br>
+
 <div align="center">
  <img
   width="100"
