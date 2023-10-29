@@ -2,7 +2,7 @@
 
 - [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
 - [Security Group](#security-group)
-- [EC2 (Elastic Com)](#ec2-elastic-com)
+- [EC2 (Elastic Compute Cloud)](#ec2-elastic-compute-cloud)
 - [RDS (Relational Database Service)](#rds-relational-database-service)
 - [Daemon](#daemon)
 - [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
