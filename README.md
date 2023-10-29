@@ -1,11 +1,12 @@
 # Deployment Guide
 
-- [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
-- [Security Group](#security-group)
-- [EC2 (Elastic Cloud Compute)](#ec2-elastic-cloud-compute)
-- [RDS (Relational Database Service)](#rds-relational-database-service)
-- [Daemon](#daemon)
-- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
+- [Deployment Guide](#deployment-guide)
+	- [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
+	- [Security Group](#security-group)
+	- [EC2 (Elastic Cloud Compute)](#ec2-elastic-cloud-compute)
+	- [RDS (Relational Database Service)](#rds-relational-database-service)
+	- [Daemon](#daemon)
+	- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
 
 ## VPC (Virtual Private Cloud)
 
@@ -103,14 +104,14 @@ sudo systemctl status twoge
 
 ## AWS Services & their purpose for Twoge
 
-- **AWS EC2** (*Elastic Compute Cloud*) - Host the application.
-- **AWS S3** (*Simple Storage Service*) - Store static files, such as images, videos, and other assets.
-- **AWS IAM** (*Identity & Access Management*) - Manage access and permissions to AWS resources.
-- **AWS VPC** (*Virtual Private Cloud*) - Create a secure and isolated network environment.
-- **AWS ALB** (*Application Load Balancer*) - Distribute incoming traffic across multiple EC2 instances.
-- **AWS ASG** (*Auto Scaling Group*) - Automatically scale EC2 instances up or down based on the demand.
-- **AWS SNS** (*Simple Notification Service*) - Receive notifications about the app's performance & health.
-- **AWS RDS** (*Relational Database Service*) - PostgreSQL database.
+- [AWS EC2 (*Elastic Compute Cloud*)](https://aws.amazon.com/ec2/) - Host the application.
+- [AWS S3 (*Simple Storage Service*)](https://aws.amazon.com/s3/) - Store static files, such as images, videos, and other assets.
+- [AWS IAM (*Identity & Access Management*)](https://aws.amazon.com/iam/) - Manage access and permissions to AWS resources.
+- [AWS VPC (*Virtual Private Cloud*)](https://aws.amazon.com/vpc/) - Create a secure and isolated network environment.
+- [AWS ALB (*Application Load Balancer*)](https://aws.amazon.com/alb/) - Distribute incoming traffic across multiple EC2 instances.
+- [AWS ASG (*Auto Scaling Group*)](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html) - Automatically scale EC2 instances up or down based on the demand.
+- [AWS SNS (*Simple Notification Service*)](https://aws.amazon.com/sns/) - Receive notifications about the app's performance & health.
+- [AWS RDS (*Relational Database Service*)](https://aws.amazon.com/rds/) - PostgreSQL database.
 
 <br>
 <br>
