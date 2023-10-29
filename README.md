@@ -2,7 +2,7 @@
 
 - [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
 - [Security Group](#security-group)
-- [EC2 (Elastic Cloud Compute)](#ec2-elastic-cloud-compute)
+- [EC2 (Elastic Com)](#ec2-elastic-com)
 - [RDS (Relational Database Service)](#rds-relational-database-service)
 - [Daemon](#daemon)
 - [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
@@ -21,7 +21,7 @@ HTTP | TCP | 80   | 0.0.0.0/0
 
 PSQL | TCP | 5432 | RDS IP?
 
-## EC2 (Elastic Cloud Compute)
+## EC2 (Elastic Compute Cloud)
 
 1. Create an Ubuntu instance with SSH and HTTP access.
 
