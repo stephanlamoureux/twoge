@@ -103,14 +103,14 @@ sudo systemctl status twoge
 
 ## AWS Services & their purpose for Twoge
 
-1. AWS EC2 (Elastic Compute Cloud) to host the application.
-2. AWS S3 (Simple Storage Service) to store static files, such as images, videos, and other assets.
-3. AWS IAM (Identity & Access Management) to manage access and permissions to AWS resources.
-4. AWS VPC (Virtual Private Cloud) to create a secure and isolated network environment.
-5. AWS ALB (Application Load Balancer) to distribute incoming traffic across multiple EC2 instances.
-6. AWS ASG (Auto Scaling Group) to automatically scale EC2 instances up or down based on the demand.
-7. AWS SNS (Simple Notification Service) to receive notifications about the app's performance & health.
-8. AWS RDS (Relational Database Service) for the database.
+- **AWS EC2** (*Elastic Compute Cloud*) - Host the application.
+- **AWS S3** (*Simple Storage Service*) - Store static files, such as images, videos, and other assets.
+- **AWS IAM** (*Identity & Access Management*) - Manage access and permissions to AWS resources.
+- **AWS VPC** (*Virtual Private Cloud*) - Create a secure and isolated network environment.
+- **AWS ALB** (*Application Load Balancer*) - Distribute incoming traffic across multiple EC2 instances.
+- **AWS ASG** (*Auto Scaling Group*) - Automatically scale EC2 instances up or down based on the demand.
+- **AWS SNS** (*Simple Notification Service*) - Receive notifications about the app's performance & health.
+- **AWS RDS** (*Relational Database Service*) - PostgreSQL database.
 
 <br>
 <br>
