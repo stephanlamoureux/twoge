@@ -1,0 +1,67 @@
+3. Initialize the DB:
+
+```sh
+sudo postgresql-setup initdb
+```
+
+4. Add the PostgreSQL service to system startup and check status:
+
+```sh
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+sudo systemctl status postgresql
+```
+
+5. Login to the database:
+
+```sh
+sudo -u postgres psql
+```
+
+6. Set new password:
+
+```sh
+ALTER USER postgres PASSWORD 'myPassword';
+\q
+```
+
+By default the remote PostgreSQL connection is disabled. You need to add the following configuration to enable remote connectivity.
+
+7. Enable Remote Connection For PostgreSQL on Amazon Linux
+
+```sh
+sudo nano /var/lib/pgsql/data/postgresql.conf
+```
+
+Locate the line that starts with “listen_addresses“. Uncomment and change it to “listen_addresses = ‘*’“. This will allow connections from any IP address.
+
+8. Edit pg_hba.conf
+
+```sh
+sudo nano /var/lib/pgsql/data/pg_hba.conf
+```
+
+Add the following to the end of the file to allow client connections to all databases.
+
+```sh
+host    all          all            0.0.0.0/0  md5
+```
+
+9. To apply all the changes, restart the PostgreSQL service using the following command.
+
+```sh
+sudo systemctl restart postgresql
+```
+
+2. Install the PostgreSQL server on the EC2 Instance:
+
+```sh
+sudo amazon-linux-extras enable postgresql14
+
+sudo yum install postgresql-server -y
+```
+
+3. Connect to the DB instance:
+
+```sh
+psql --host=endpoint --port=5432 --dbname=postgres --username=postgres

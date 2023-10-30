@@ -1,75 +1,42 @@
 # Deployment Guide
 
-- [VPC (Virtual Private Cloud)](#vpc-virtual-private-cloud)
-- [Security Group](#security-group)
-- [EC2 (Elastic Compute Cloud)](#ec2-elastic-compute-cloud)
-- [RDS (Relational Database Service)](#rds-relational-database-service)
-- [Daemon](#daemon)
-- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
+- [Deployment Guide](#deployment-guide)
+	- [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
+	- [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
+	- [RDS (*Relational Database Service*)](#rds-relational-database-service)
+	- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
 
-## VPC (Virtual Private Cloud)
+## VPC (*Virtual Private Cloud*)
 
 Create a VPC with two public subnets.
 
-## Security Group
+## EC2 (*Elastic Compute Cloud*)
 
-Create a security group that allows inbound access for HTTP, SSH, and PostgreSQL.
-
-SSH  | TCP | 22   | 0.0.0.0/0
-
-HTTP | TCP | 80   | 0.0.0.0/0
-
-PSQL | TCP | 5432 | RDS IP?
-
-## EC2 (Elastic Compute Cloud)
-
-1. Create an Ubuntu instance with SSH and HTTP access.
-
-2. SSH into the instance and install dependencies:
+1. Create a new EC2 instance:
 
 ```sh
+Amazon Linux 2
+t2.micro
+choose key pair
+allow SSH and HTTP
+```
+
+Add the following script to the user data section:
+
+```sh
+#!/bin/bash
 sudo yum update -y
-
 sudo yum install git -y
-
-git clone https://github.com/chandradeoarya/twoge.git
-
+git clone https://github.com/chandradeoarya/twoge
 cd twoge
-
+sudo yum install python-pip -y
 python3 -m venv venv
-
 source venv/bin/activate
-
 pip install -r requirements.txt
-```
 
-3. Create AMI.
+echo 'SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@endpoint/postgres"' > .env
 
-## RDS (Relational Database Service)
-
-1. Create a .env file in root of twoge directory:
-
-```sh
-nano .env
-```
-
-2. Add the PostgreSQL database URL:
-
-```sh
-SQLALCHEMY_DATABASE_URI = "PostgreSQL database URL"
-```
-
-## Daemon
-
-1. Create the service file:
-
-```sh
-nano twoge.service
-```
-
-2. Add the following contents:
-
-```sh
+echo '
 Description=Gunicorn instance to serve twoge
 
 Wants=network.target
@@ -84,22 +51,46 @@ Restart=always
 RestartSec=10
 
 [Install]
-WantedBy=multi-user.target'
+WantedBy=multi-user.target' > twoge.service
+
+sudo cp twoge.service /etc/systemd/system/twoge.service
+sudo systemctl daemon-reload
+sudo systemctl enable twoge
+sudo systemctl start twoge
+sudo systemctl status twoge
+
+sudo amazon-linux-extras install nginx1 -y
 ```
 
-3. Move the service file to the correct directory and activate it:
+sudo nano /etc/nginx/sites-available/app
+
+## RDS (*Relational Database Service*)
+
+1. Create a new RDS database:
 
 ```sh
-sudo cp twoge.service /etc/systemd/system/twoge.service
-
-sudo systemctl daemon-reload
-
-sudo systemctl enable twoge
-
-sudo systemctl start twoge
-
-sudo systemctl status twoge
+Standard create
+PostgreSQL
+Latest version
+Free tier
+DB Instance ID
+Create username/password
+Select your VPC
+Public access
 ```
+
+After the database is ready, edit the default security group to add an inbound rule for PostgreSQL.
+
+Connect to the database using pgAdmin4:
+
+```sh
+hostname: RDS database endpoint
+port: 5432
+user: postgres
+password: the one made during RDS creation
+```
+
+<hr>
 
 ## AWS Services & their purpose for Twoge
 
