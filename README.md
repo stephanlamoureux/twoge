@@ -58,11 +58,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable twoge
 sudo systemctl start twoge
 sudo systemctl status twoge
-
-sudo amazon-linux-extras install nginx1 -y
 ```
-
-sudo nano /etc/nginx/sites-available/app
 
 ## RDS (*Relational Database Service*)
 
