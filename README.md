@@ -1,15 +1,27 @@
-# Deployment Guide
+# Twoge Deployment Guide
 
-- [Deployment Guide](#deployment-guide)
+- [Twoge Deployment Guide](#twoge-deployment-guide)
 	- [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
 		- [Subnets](#subnets)
 		- [Internet Gateway](#internet-gateway)
 		- [Route Table](#route-table)
+		- [Routes](#routes)
 		- [Subnet Associations](#subnet-associations)
 	- [RDS (*Relational Database Service*)](#rds-relational-database-service)
 	- [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
 	- [S3](#s3)
-	- [IAM Role](#iam-role)
+		- [IAM Role](#iam-role)
+		- [Permissions](#permissions)
+		- [Attach S3 role](#attach-s3-role)
+		- [Bucket Policy](#bucket-policy)
+	- [Load Balancing](#load-balancing)
+		- [Security Group](#security-group)
+		- [Target Group](#target-group)
+		- [Application Load Balancer](#application-load-balancer)
+	- [Auto Scaling](#auto-scaling)
+		- [Launch template](#launch-template)
+		- [Auto Scaling Group](#auto-scaling-group)
+		- [ASG Policy](#asg-policy)
 	- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
 
 ## VPC (*Virtual Private Cloud*)
@@ -71,7 +83,7 @@ Create route table:
 2. Select twoge-vpc
 3. Create
 
-Routes:
+### Routes
 
 1. Select twoge-route
 2. Select Routes tab
@@ -103,8 +115,6 @@ Public access - yes
 Remaining options are left at default
 ```
 
-After the database is ready, edit the default security group to add an inbound rule for PostgreSQL.
-
 Connect to the database using pgAdmin4:
 
 ```sh
@@ -116,7 +126,7 @@ password: the one made during RDS creation
 
 ## EC2 (*Elastic Compute Cloud*)
 
-1. Create a new EC2 instance:
+Create a new EC2 instance:
 
 ```sh
 Amazon Linux 2
@@ -124,11 +134,13 @@ t2.micro
 choose key pair
 select the twoge vpc
 auto-assign public ip
+```
 
 Create a security group
 
 Inbound rules:
 
+```
 HTTP | 80 | 0.0.0.0/0
 HTTPS | 443 | 0.0.0.0/0
 SSH | 22 | 0.0.0.0/0
@@ -185,11 +197,9 @@ Remaining settings are left at default
 
 Next upload the image files from the 'img' directory in the twoge app.
 
-## IAM Role
+### IAM Role
 
 An IAM role must be created to allow access to an S3 bucket from an EC2 instance.
-
-Create an IAM Role:
 
 1. IAM Dashboard
 2. Roles
@@ -198,7 +208,7 @@ Create an IAM Role:
 5. Use case - Select EC2
 6. Click next
 
-Permissions:
+### Permissions
 
 1. Search for S3
 2. Select AmazonS3FullAccess
@@ -206,14 +216,14 @@ Permissions:
 4. Give a name and description
 5. Create role
 
-Attach S3 role:
+### Attach S3 role
 
 1. Go to the EC2 Instance
 2. Click Actions -> Security -> Modify IAM role
 3. Select s3access role
 4. Update
 
-Bucket Policy:
+### Bucket Policy
 
 1. Select the twoge bucket
 2. Click Permissions tab
@@ -240,21 +250,90 @@ Bucket Policy:
 }
 ```
 
+## Load Balancing
+
+### Security Group
+
+Create a security group to be used by the load balancer:
+
+Name: twogeALBSG
+HTTP | TCP | 80  0.0.0.0/0
+HTTPS | TCP | 443 | 0.0.0.0/0
+Custom TCP | TCP | 9876 | 0.0.0.0/0
+
+### Target Group
+
+You must first create a group so the load balancer knows where to send the traffic.
+
+1. Target type: Instances
+2. Group name: twoge-tg
+3. Protocol: HTTP Port 80
+4. IP type: IPv4
+5. VPC: twoge VPC
+6. Protocol version: HTTP1
+7. Health checks: HTTP
+8. Next
+9. Select the twoge EC2 instance, click include as pending below
+10. Create target group
+
+### Application Load Balancer
+
+1. Load balancer -> Create -> Application load balancer
+2. Name: twoge-alb
+3. Scheme: Internet-facing
+4. IP type: IPv4
+5. VPC: twoge vpc
+6. Mappings: select both subnets
+7. Security groups: twogeALBSG
+8. Listener: HTTP Port 80 | Select twoge target group
+9. Create
+
+## Auto Scaling
+
+### Launch template
+
+We must first create a launch template that will be used by the ASG to create new instances off of.
+
+1. Name: twoge-template
+2. Select keypair
+3. AMI: twoge
+4. Security group: twoge
+5. Advanced details -> IAM instance profile -> s3access
+
+### Auto Scaling Group
+
+1. Create
+2. Name: twoge-asg
+3. vCPU and memory: min 0, max 50
+4. VPC: twoge-vpc
+5. AZ and subnets: select both
+6. Attach to an existing load balancer
+7. Select twoge target group
+8. Turn on ELB health checks
+9. Group size: desired 2, min 1, max 3.
+10. Add notification -> create a name and add email
+11. Confirm and create
+
+### ASG Policy
+
+1. Select ASG
+2. Create dynamic scaling policy
+3. Simple scaling
+4. Create cloudwatch alarm
+	1. Select metric -> EC2
+	2. By auto scaling group -> select twoge ASG
+	3. Select twoge-asg metric value of CPUUtilization -> select metric
+	5. Threshold(static) greater/equal -> 50
+	7. Notifications -> Create new topic
+	8. Topic name -> add email -> create topic
+	9. Create alarm name -> Create alarm
+5. Go back to creating the dynamic scaling policy and refresh the cloudwatch alarm to select the one that was just created.
+6. Take Action: Add 1 capacity units
+7. Wait 60 seconds
+8. Create
+9. Confirm email to subscribe
+
 <hr>
-
-## AWS Services & their purpose for Twoge
-
-- [AWS EC2 (*Elastic Compute Cloud*)](https://aws.amazon.com/ec2/) - Host the application.
-- [AWS S3 (*Simple Storage Service*)](https://aws.amazon.com/s3/) - Store static files, such as images, videos, and other assets.
-- [AWS IAM (*Identity & Access Management*)](https://aws.amazon.com/iam/) - Manage access and permissions to AWS resources.
-- [AWS VPC (*Virtual Private Cloud*)](https://aws.amazon.com/vpc/) - Create a secure and isolated network environment.
-- [AWS ALB (*Application Load Balancer*)](https://aws.amazon.com/alb/) - Distribute incoming traffic across multiple EC2 instances.
-- [AWS ASG (*Auto Scaling Group*)](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html) - Automatically scale EC2 instances up or down based on the demand.
-- [AWS SNS (*Simple Notification Service*)](https://aws.amazon.com/sns/) - Receive notifications about the app's performance & health.
-- [AWS RDS (*Relational Database Service*)](https://aws.amazon.com/rds/) - PostgreSQL database.
-
-<br>
-<br>
 
 <div align="center">
  <img
