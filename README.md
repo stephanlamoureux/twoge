@@ -1,20 +1,23 @@
 # Twoge Deployment Guide
 
 - [Twoge Deployment Guide](#twoge-deployment-guide)
+  - [Twoge](#twoge)
+    - [Requirements](#requirements)
   - [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
     - [Create a VPC](#create-a-vpc)
     - [Enable DNS hostnames and resolution](#enable-dns-hostnames-and-resolution)
   - [Subnets](#subnets)
     - [Subnet 1](#subnet-1)
     - [Subnet 2](#subnet-2)
-  - [Internet Gateway](#internet-gateway)
+  - [Internet Gateways](#internet-gateways)
     - [Create Internet Gateway](#create-internet-gateway)
-  - [Route Table](#route-table)
+    - [Attach gateway to the VPC](#attach-gateway-to-the-vpc)
+  - [Route Tables](#route-tables)
     - [Create Route Table](#create-route-table)
     - [Create Routes](#create-routes)
     - [Subnet Associations](#subnet-associations)
   - [RDS (*Relational Database Service*)](#rds-relational-database-service)
-    - [Create a new RDS database](#create-a-new-rds-database)
+    - [Create a RDS database](#create-a-rds-database)
     - [Connect to the database using pgAdmin4](#connect-to-the-database-using-pgadmin4)
   - [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
     - [Create a new EC2 instance](#create-a-new-ec2-instance)
@@ -37,14 +40,51 @@
   - [Future Improvements](#future-improvements)
     - [Database](#database)
     - [Diagram](#diagram)
+    - [README](#readme)
+
+## Twoge
+
+<div align="center">
+ <img
+  width="100"
+  alt="Project Twoge"
+  src="./img/twoge.png" />
+</div>
+
+<br>
+
+Twoge is a social media platform dedicated solely to tweets about Dodge. This application is built using Flask, SQLAlchemy, and PostgreSQL.
+
+The repository for it is located [here](https://github.com/chandradeoarya/twoge).
+
+### Requirements
+
+1. Create an Amazon VPC with two public subnets.
+
+2. Host the static files like images and videos on an S3 bucket.
+
+3. Create an IAM role that allows public access of S3 bucket.
+
+4. Launch an EC2 instance with an Amazon Linux 2 AMI, using the IAM role you previously created.
+
+5. Install and configure the twoge application on an EC2 instance.
+
+6. Create an Amazon ALB and configure it to route traffic to your EC2 instance. Add a listener rule to forward traffic to HTTP.
+
+7. Create an Amazon ASG that automatically launches EC2 instances when traffic to your application exceeds a certain threshold. Configure the ASG to use the Amazon ALB as the load balancer.
+
+8. Use Amazon SNS to receive notifications when the number of EC2 instances in your ASG increases or decreases. Configure an SNS topic to send email notifications to your email address. Stop a server and SNS should send email notifications about server shut down.
+
+9. Run the instance python stress script and show the ASG in play.
 
 ## VPC (*Virtual Private Cloud*)
 
 ### Create a VPC
 
-1. VPC only
+1. Resources to create: VPC only
 2. Name: twoge-vpc
 3. IPv4 CIDR: 10.0.0.0/24
+4. The rest is default
 
 ### Enable DNS hostnames and resolution
 
@@ -57,37 +97,46 @@
 
 ### Subnet 1
 
-1. Select VPC (twoge-vpc)
-2. Subnet name: public-1a
-3. Availability Zone: 1a
-4. IPv4 subnet CIDR block: 10.0.0.0/25
+1. Create subnet
+2. VPC ID: Select VPC (twoge-vpc)
+3. Subnet name: public-1a
+4. Availability Zone: 1a
+5. IPv4 subnet CIDR block: 10.0.0.0/25
+6. The rest is default
 
 ### Subnet 2
 
-1. Select VPC (twoge-vpc)
-2. Subnet name - public-1b
-3. Availability Zone - 1b
-4. IPv4 subnet CIDR block - 10.0.0.128/25
+1. Create subnet
+2. VPC ID: Select VPC (twoge-vpc)
+3. Subnet name: public-1b
+4. Availability Zone: 1b
+5. IPv4 subnet CIDR block - 10.0.0.128/25
 
 Created CIDR blocks using [Subnet Calculator](https://www.davidc.net/sites/default/subnets/subnets.html).
 
-## Internet Gateway
+## Internet Gateways
 
 To allow internet access to the twoge VPC.
 
 ### Create Internet Gateway
 
-1. Name: twoge-igw
-2. Create
-3. Attach to twoge VPC
+1. Create internet gateway
+2. Name: twoge-igw
+3. Click Create
 
-## Route Table
+### Attach gateway to the VPC
+
+1. Select the twoge IGW
+2. Actions -> Attach to twoge VPC
+
+## Route Tables
 
 ### Create Route Table
 
-1. Name: twoge-route
-2. Select twoge-vpc
-3. Create
+1. Create route table
+2. Name: twoge-route
+3. VPC: Select twoge-vpc
+4. Create route table
 
 ### Create Routes
 
@@ -101,23 +150,25 @@ To allow internet access to the twoge VPC.
 
 ### Subnet Associations
 
-1. Edit subnet associations
-2. Select the public-1a and public-1b subnets
-3. Save associations
+1. Select the twoge-route
+2. Click Subnet associations tab -> Edit subnet associations
+3. Select the public-1a and public-1b subnets
+4. Save associations
 
 ## RDS (*Relational Database Service*)
 
-### Create a new RDS database
+### Create a RDS database
 
-1. Standard create
-2. PostgreSQL
-3. Latest version
-4. Free tier
-5. DB Instance ID: twoge-db
-6. Create username/password
-7. Select the twoge VPC
-8. Public access: yes
-9. Remaining options are left at default
+1. Create database
+2. Creation method: Standard create
+3. Engine type: PostgreSQL
+4. Version: Latest version
+5. Templates: Free tier
+6. DB Instance ID: twoge-db
+7. Create username/password
+8. VPC: Select the twoge VPC
+9. Public access: yes
+10. Remaining options are left at default
 
 ### Connect to the database using pgAdmin4
 
@@ -130,11 +181,15 @@ To allow internet access to the twoge VPC.
 
 ### Create a new EC2 instance
 
-1. Amazon Linux 2
-2. t2.micro
-3. choose key pair
-4. select the twoge vpc
-5. auto-assign public ip
+1. Launch instance
+2. Name: twoge
+3. AMI: Amazon Linux 2
+4. Instance type: t2.micro
+5. Key pair: Choose or create your key pair
+6. Network: Select the twoge vpc
+7. Security group: Create a SG with the inbound rules below
+8. Auto-assign public ip: Enabled
+9. User data: Add the shell script below
 
 ### Create a security group
 
@@ -258,7 +313,9 @@ aws s3 ls s3://your-bucket-name/
 
 ### Security Group
 
-Create a security group to be used by the load balancer:
+Create a security group to be used by the load balancer.
+
+Inbound rules:
 
 ```
 Name: twogeALBSG
@@ -356,21 +413,6 @@ Add more layers to show lower-level details.
 - Instance
 - RDS
 
-<hr>
+### README
 
-<div align="center">
- <img
-  width="100"
-  alt="Project Twoge"
-  src="./img/twoge.png" />
- <h3>Twoge</h3>
- <p>A social media platform dedicated solely to tweets about Dodge.</p>
-</div>
-
-<div align="center">
- <img
-  width="500"
-  alt="Project Twoge"
-  src="./img/twoge-cover.png" />
- <p>This application is built using Flask, SQLAlchemy, and PostgreSQL.</p>
-</div>
+- Add screenshots
