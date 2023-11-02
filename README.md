@@ -404,6 +404,10 @@ We must first create a launch template that the ASG will use to create new insta
 - Add a NAT gateway for internet access
 - Create a bastion host to tunnel into the private instance
 
+## S3
+
+- Serve the image files for the app through an S3 bucket
+  
 ### Diagram
 
 Add more layers to show lower-level details.
