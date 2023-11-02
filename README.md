@@ -1,41 +1,42 @@
 # Twoge Deployment Guide
 
 - [Twoge Deployment Guide](#twoge-deployment-guide)
-  - [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
-    - [Create a VPC](#create-a-vpc)
-    - [Enable DNS hostnames and resolution](#enable-dns-hostnames-and-resolution)
-  - [Subnets](#subnets)
-    - [Subnet 1](#subnet-1)
-    - [Subnet 2](#subnet-2)
-  - [Internet Gateway](#internet-gateway)
-    - [Create internet gateway](#create-internet-gateway)
-  - [Route Table](#route-table)
-    - [Create Route Table](#create-route-table)
-    - [Create Routes](#create-routes)
-    - [Subnet Associations](#subnet-associations)
-  - [RDS (*Relational Database Service*)](#rds-relational-database-service)
-    - [Create a new RDS database](#create-a-new-rds-database)
-    - [Connect to the database using pgAdmin4](#connect-to-the-database-using-pgadmin4)
-  - [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
-    - [Create a new EC2 instance](#create-a-new-ec2-instance)
-    - [Create a security group](#create-a-security-group)
-  - [S3](#s3)
-    - [Create a bucket](#create-a-bucket)
-    - [IAM Role](#iam-role)
-    - [Permissions](#permissions)
-    - [Attach S3 role](#attach-s3-role)
-    - [Bucket Policy](#bucket-policy)
-    - [Test S3 Access](#test-s3-access)
-  - [Load Balancing](#load-balancing)
-    - [Security Group](#security-group)
-    - [Target Group](#target-group)
-    - [Application Load Balancer](#application-load-balancer)
-  - [Auto Scaling](#auto-scaling)
-    - [Launch template](#launch-template)
-    - [Auto Scaling Group](#auto-scaling-group)
-    - [ASG Policy](#asg-policy)
-  - [Future Improvements](#future-improvements)
-
+	- [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
+		- [Create a VPC](#create-a-vpc)
+		- [Enable DNS hostnames and resolution](#enable-dns-hostnames-and-resolution)
+	- [Subnets](#subnets)
+		- [Subnet 1](#subnet-1)
+		- [Subnet 2](#subnet-2)
+	- [Internet Gateway](#internet-gateway)
+		- [Create internet gateway](#create-internet-gateway)
+	- [Route Table](#route-table)
+		- [Create Route Table](#create-route-table)
+		- [Create Routes](#create-routes)
+		- [Subnet Associations](#subnet-associations)
+	- [RDS (*Relational Database Service*)](#rds-relational-database-service)
+		- [Create a new RDS database](#create-a-new-rds-database)
+		- [Connect to the database using pgAdmin4](#connect-to-the-database-using-pgadmin4)
+	- [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
+		- [Create a new EC2 instance](#create-a-new-ec2-instance)
+		- [Create a security group](#create-a-security-group)
+	- [S3](#s3)
+		- [Create a bucket](#create-a-bucket)
+		- [IAM Role](#iam-role)
+		- [Permissions](#permissions)
+		- [Attach S3 role](#attach-s3-role)
+		- [Bucket Policy](#bucket-policy)
+		- [Test S3 Access](#test-s3-access)
+	- [Load Balancing](#load-balancing)
+		- [Security Group](#security-group)
+		- [Target Group](#target-group)
+		- [Application Load Balancer](#application-load-balancer)
+	- [Auto Scaling](#auto-scaling)
+		- [Launch template](#launch-template)
+		- [Auto Scaling Group](#auto-scaling-group)
+		- [ASG Policy](#asg-policy)
+	- [Future Improvements](#future-improvements)
+		- [Database](#database)
+		- [Diagram](#diagram)
 
 ## VPC (*Virtual Private Cloud*)
 
@@ -325,13 +326,13 @@ We must first create a launch template that will be used by the ASG to create ne
 2. Create dynamic scaling policy
 3. Simple scaling
 4. Create cloudwatch alarm
-	1. Select metric -> EC2
-	2. By auto scaling group -> select twoge ASG
-	3. Select twoge-asg metric value of CPUUtilization -> select metric
-	5. Threshold(static) greater/equal -> 50
-	7. Notifications -> Create new topic
-	8. Topic name -> add email -> create topic
-	9. Create alarm name -> Create alarm
+   1. Select metric -> EC2
+   2. By auto scaling group -> select twoge ASG
+   3. Select twoge-asg metric value of CPUUtilization -> select metric
+   4. Threshold(static) greater/equal -> 50
+   5. Notifications -> Create new topic
+   6. Topic name -> add email -> create topic
+   7.  Create alarm name -> Create alarm
 5. Go back to creating the dynamic scaling policy and refresh the cloudwatch alarm to select the one that was just created.
 6. Take Action: Add 1 capacity units
 7. Wait 60 seconds
@@ -340,9 +341,15 @@ We must first create a launch template that will be used by the ASG to create ne
 
 ## Future Improvements
 
+### Database
+
 - Private subnet for the PostgreSQL database
-  - Add a NAT gateway for internet access
-  - Add routing to receive web traffic
+- Add a NAT gateway for internet access
+- Create bastion host to tunnel into private instance
+
+### Diagram
+
+- Add more layers to show lower level details
 
 <hr>
 
