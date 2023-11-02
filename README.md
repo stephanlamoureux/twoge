@@ -63,7 +63,7 @@ The repository for it is located [here](https://github.com/chandradeoarya/twoge)
 
 2. Host the static files like images and videos on an S3 bucket.
 
-3. Create an IAM role that allows public access of S3 bucket.
+3. Create an IAM role that allows public access to the S3 bucket.
 
 4. Launch an EC2 instance with an Amazon Linux 2 AMI, using the IAM role you previously created.
 
@@ -73,9 +73,9 @@ The repository for it is located [here](https://github.com/chandradeoarya/twoge)
 
 7. Create an Amazon ASG that automatically launches EC2 instances when traffic to your application exceeds a certain threshold. Configure the ASG to use the Amazon ALB as the load balancer.
 
-8. Use Amazon SNS to receive notifications when the number of EC2 instances in your ASG increases or decreases. Configure an SNS topic to send email notifications to your email address. Stop a server and SNS should send email notifications about server shut down.
+8. Use Amazon SNS to receive notifications when the number of EC2 instances in your ASG increases or decreases. Configure an SNS topic to send email notifications to your email address. Stop a server and SNS should send email notifications about the server shutdown.
 
-9. Run the instance python stress script and show the ASG in play.
+9. Run the instance Python stress script and show the ASG in play.
 
 ## VPC (*Virtual Private Cloud*)
 
@@ -279,7 +279,7 @@ An IAM role must be created to allow access to an S3 bucket from an EC2 instance
 ### Bucket Policy
 
 1. Select the twoge bucket
-2. Click Permissions tab
+2. Click the Permissions tab
 3. Under bucket policy, click edit.
 4. Enter the policy:
 
@@ -358,7 +358,7 @@ You must first create a group so the load balancer knows where to send the traff
 We must first create a launch template that the ASG will use to create new instances.
 
 1. Name: twoge-template
-2. Select keypair
+2. Select key pair
 3. AMI: twoge
 4. Security group: twoge
 5. Advanced details -> IAM instance profile -> s3access
