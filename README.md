@@ -75,7 +75,7 @@ Created CIDR blocks using [Subnet Calculator](https://www.davidc.net/sites/defau
 
 To allow internet access to the twoge VPC.
 
-### Create internet gateway
+### Create Internet Gateway
 
 1. Name: twoge-igw
 2. Create
@@ -193,7 +193,7 @@ sudo systemctl status twoge
 2. Region: eu-central-1
 3. Remaining settings are left at default
 
-Next upload the image files from the 'img' directory in the twoge app.
+Next, upload the image files from the 'img' directory in the twoge app.
 
 ### IAM Role
 
@@ -298,7 +298,7 @@ You must first create a group so the load balancer knows where to send the traff
 
 ### Launch template
 
-We must first create a launch template that will be used by the ASG to create new instances off of.
+We must first create a launch template that the ASG will use to create new instances.
 
 1. Name: twoge-template
 2. Select keypair
@@ -333,7 +333,7 @@ We must first create a launch template that will be used by the ASG to create ne
    5. Notifications -> Create new topic
    6. Topic name -> add email -> create topic
    7.  Create alarm name -> Create alarm
-5. Go back to creating the dynamic scaling policy and refresh the cloudwatch alarm to select the one that was just created.
+5. Return to creating the dynamic scaling policy, refresh the cloudwatch alarm, and select the one just created.
 6. Take Action: Add 1 capacity units
 7. Wait 60 seconds
 8. Create
@@ -345,11 +345,11 @@ We must first create a launch template that will be used by the ASG to create ne
 
 - Private subnet for the PostgreSQL database
 - Add a NAT gateway for internet access
-- Create bastion host to tunnel into private instance
+- Create a bastion host to tunnel into the private instance
 
 ### Diagram
 
-Add more layers to show lower level details.
+Add more layers to show lower-level details.
 
 - Subnets
 - Routing
