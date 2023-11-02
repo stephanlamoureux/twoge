@@ -1,89 +1,94 @@
 # Twoge Deployment Guide
 
 - [Twoge Deployment Guide](#twoge-deployment-guide)
-	- [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
-		- [Subnets](#subnets)
-		- [Internet Gateway](#internet-gateway)
-		- [Route Table](#route-table)
-		- [Routes](#routes)
-		- [Subnet Associations](#subnet-associations)
-	- [RDS (*Relational Database Service*)](#rds-relational-database-service)
-	- [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
-	- [S3](#s3)
-		- [IAM Role](#iam-role)
-		- [Permissions](#permissions)
-		- [Attach S3 role](#attach-s3-role)
-		- [Bucket Policy](#bucket-policy)
-	- [Load Balancing](#load-balancing)
-		- [Security Group](#security-group)
-		- [Target Group](#target-group)
-		- [Application Load Balancer](#application-load-balancer)
-	- [Auto Scaling](#auto-scaling)
-		- [Launch template](#launch-template)
-		- [Auto Scaling Group](#auto-scaling-group)
-		- [ASG Policy](#asg-policy)
-	- [AWS Services \& their purpose for Twoge](#aws-services--their-purpose-for-twoge)
+  - [VPC (*Virtual Private Cloud*)](#vpc-virtual-private-cloud)
+    - [Create a VPC](#create-a-vpc)
+    - [Enable DNS hostnames and resolution](#enable-dns-hostnames-and-resolution)
+  - [Subnets](#subnets)
+    - [Subnet 1](#subnet-1)
+    - [Subnet 2](#subnet-2)
+  - [Internet Gateway](#internet-gateway)
+    - [Create internet gateway](#create-internet-gateway)
+  - [Route Table](#route-table)
+    - [Create Route Table](#create-route-table)
+    - [Create Routes](#create-routes)
+    - [Subnet Associations](#subnet-associations)
+  - [RDS (*Relational Database Service*)](#rds-relational-database-service)
+    - [Create a new RDS database](#create-a-new-rds-database)
+    - [Connect to the database using pgAdmin4](#connect-to-the-database-using-pgadmin4)
+  - [EC2 (*Elastic Compute Cloud*)](#ec2-elastic-compute-cloud)
+    - [Create a new EC2 instance](#create-a-new-ec2-instance)
+    - [Create a security group](#create-a-security-group)
+  - [S3](#s3)
+    - [Create a bucket](#create-a-bucket)
+    - [IAM Role](#iam-role)
+    - [Permissions](#permissions)
+    - [Attach S3 role](#attach-s3-role)
+    - [Bucket Policy](#bucket-policy)
+    - [Test S3 Access](#test-s3-access)
+  - [Load Balancing](#load-balancing)
+    - [Security Group](#security-group)
+    - [Target Group](#target-group)
+    - [Application Load Balancer](#application-load-balancer)
+  - [Auto Scaling](#auto-scaling)
+    - [Launch template](#launch-template)
+    - [Auto Scaling Group](#auto-scaling-group)
+    - [ASG Policy](#asg-policy)
+  - [Future Improvements](#future-improvements)
+
 
 ## VPC (*Virtual Private Cloud*)
 
-Create a VPC:
+### Create a VPC
 
-```sh
-VPC only
-Name - twoge-vpc
-IPv4 CIDR - 10.0.0.0/24
-```
+1. VPC only
+2. Name - twoge-vpc
+3. IPv4 CIDR - 10.0.0.0/24
 
-Enable DNS hostnames and resolution:
+### Enable DNS hostnames and resolution
 
 1. Select VPC
 2. Click Actions
 3. Click Edit VPC settings
 4. Enable DNS hostnames and DNS resolution
 
-### Subnets
+## Subnets
 
-Create subnets:
+### Subnet 1
 
-Subnet 1:
+1. Select VPC (twoge-vpc)
+2. Subnet name - public-1a
+3. Availability Zone - 1a
+4. IPv4 subnet CIDR block - 10.0.0.0/25
 
-```sh
-Select VPC (twoge-vpc)
-Subnet name - public-1a
-Availability Zone - 1a
-IPv4 subnet CIDR block - 10.0.0.0/25
-```
+### Subnet 2
 
-Subnet 2:
+1. Select VPC (twoge-vpc)
+2. Subnet name - public-1b
+3. Availability Zone - 1b
+4. IPv4 subnet CIDR block - 10.0.0.128/25
 
-```sh
-Select VPC (twoge-vpc)
-Subnet name - public-1b
-Availability Zone - 1b
-IPv4 subnet CIDR block - 10.0.0.128/25
-```
+Created CIDR blocks using [Subnet Calculator](https://www.davidc.net/sites/default/subnets/subnets.html).
 
-[Subnet Calculator](https://www.davidc.net/sites/default/subnets/subnets.html)
-
-### Internet Gateway
+## Internet Gateway
 
 To allow internet access to the twoge VPC.
 
-Create internet gateway:
+### Create internet gateway
 
 1. Name - twoge-igw
 2. Create
 3. Attach to twoge VPC
 
-### Route Table
+## Route Table
 
-Create route table:
+### Create Route Table
 
 1. Name - twoge-route
 2. Select twoge-vpc
 3. Create
 
-### Routes
+### Create Routes
 
 1. Select twoge-route
 2. Select Routes tab
@@ -101,42 +106,36 @@ Create route table:
 
 ## RDS (*Relational Database Service*)
 
-1. Create a new RDS database:
+### Create a new RDS database
 
-```sh
-Standard create
-PostgreSQL
-Latest version
-Free tier
-DB Instance ID - twoge-db
-Create username/password
-Select the twoge VPC
-Public access - yes
-Remaining options are left at default
-```
+1. Standard create
+2. PostgreSQL
+3. Latest version
+4. Free tier
+5. DB Instance ID - twoge-db
+6. Create username/password
+7. Select the twoge VPC
+8. Public access - yes
+9. Remaining options are left at default
 
-Connect to the database using pgAdmin4:
+### Connect to the database using pgAdmin4
 
-```sh
-hostname: RDS database endpoint
-port: 5432
-user: postgres
-password: the one made during RDS creation
-```
+1. hostname: RDS database endpoint
+2. port: 5432
+3. user: postgres
+4. password: the one made during RDS creation
 
 ## EC2 (*Elastic Compute Cloud*)
 
-Create a new EC2 instance:
+### Create a new EC2 instance
 
-```sh
-Amazon Linux 2
-t2.micro
-choose key pair
-select the twoge vpc
-auto-assign public ip
-```
+1. Amazon Linux 2
+2. t2.micro
+3. choose key pair
+4. select the twoge vpc
+5. auto-assign public ip
 
-Create a security group
+### Create a security group
 
 Inbound rules:
 
@@ -187,13 +186,11 @@ sudo systemctl status twoge
 
 ## S3
 
-Create a bucket:
+### Create a bucket
 
-```sh
-Bucket name - stephan-twoge
-Region - eu-central-1
-Remaining settings are left at default
-```
+1. Bucket name - stephan-twoge
+2. Region - eu-central-1
+3. Remaining settings are left at default
 
 Next upload the image files from the 'img' directory in the twoge app.
 
@@ -250,16 +247,24 @@ An IAM role must be created to allow access to an S3 bucket from an EC2 instance
 }
 ```
 
+### Test S3 Access
+
+```sh
+aws s3 ls s3://your-bucket-name/
+```
+
 ## Load Balancing
 
 ### Security Group
 
 Create a security group to be used by the load balancer:
 
+```
 Name: twogeALBSG
 HTTP | TCP | 80  0.0.0.0/0
 HTTPS | TCP | 443 | 0.0.0.0/0
 Custom TCP | TCP | 9876 | 0.0.0.0/0
+```
 
 ### Target Group
 
@@ -267,7 +272,7 @@ You must first create a group so the load balancer knows where to send the traff
 
 1. Target type: Instances
 2. Group name: twoge-tg
-3. Protocol: HTTP Port 80
+3. Protocol: HTTP Port 9876
 4. IP type: IPv4
 5. VPC: twoge VPC
 6. Protocol version: HTTP1
@@ -285,7 +290,7 @@ You must first create a group so the load balancer knows where to send the traff
 5. VPC: twoge vpc
 6. Mappings: select both subnets
 7. Security groups: twogeALBSG
-8. Listener: HTTP Port 80 | Select twoge target group
+8. Listener: HTTP Port 80 -> Select twoge target group
 9. Create
 
 ## Auto Scaling
@@ -332,6 +337,12 @@ We must first create a launch template that will be used by the ASG to create ne
 7. Wait 60 seconds
 8. Create
 9. Confirm email to subscribe
+
+## Future Improvements
+
+- Private subnet for the PostgreSQL database
+  - Add a NAT gateway for internet access
+  - Add routing to receive web traffic
 
 <hr>
 
