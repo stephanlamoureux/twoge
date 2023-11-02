@@ -8,7 +8,7 @@
     - [Subnet 1](#subnet-1)
     - [Subnet 2](#subnet-2)
   - [Internet Gateway](#internet-gateway)
-    - [Create internet gateway](#create-internet-gateway)
+    - [Create Internet Gateway](#create-internet-gateway)
   - [Route Table](#route-table)
     - [Create Route Table](#create-route-table)
     - [Create Routes](#create-routes)
@@ -160,7 +160,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 
-echo 'SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@endpoint/postgres"' > .env
+echo 'SQLALCHEMY_DATABASE_URI = "postgresql://username:password@endpoint/database"' > .env
 
 echo '
 Description=Gunicorn instance to serve twoge
