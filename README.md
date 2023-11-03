@@ -39,7 +39,7 @@
 		- [ASG Policy](#asg-policy)
 	- [Future Improvements](#future-improvements)
 		- [Database](#database)
-		- [S3](#s3-1)
+		- [NGINX](#nginx)
 		- [Diagram](#diagram)
 		- [README](#readme)
 
@@ -405,9 +405,9 @@ We must first create a launch template that the ASG will use to create new insta
 - Add a NAT gateway for internet access
 - Create a bastion host to tunnel into the private instance
 
-### S3
+### NGINX
 
-- Serve the image files for the app through an S3 bucket
+- Use NGINX to serve the image files for the app through an S3 bucket
 
 ### Diagram
 
